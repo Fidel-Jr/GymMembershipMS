@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login | Gym Membership System</title>
+  <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
+  <style>
+    body, html {
+      height: 100%;
+      margin: 0;
+      background-color: #f8f9fa;
+    }
+    .login-container {
+      display: flex;
+      height: 100vh;
+    }
+    .login-left {
+      flex: 1;
+      background: #1d1919;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 2rem;
+    }
+    .login-left h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+    .login-left p {
+      font-size: 1rem;
+      opacity: 0.9;
+    }
+    .login-right {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #fff;
+      padding: 3rem;
+    }
+    .login-box {
+      width: 100%;
+      max-width: 380px;
+      
+    }
+    .btn-primary{
+        background-color: #1c1818 !important;
+        border: #1c1818;
+    }
+    @media (max-width: 768px) {
+      .login-container {
+        flex-direction: column;
+      }
+      .login-left {
+        height: 35vh;
+      }
+      .login-right {
+        height: 65vh;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="login-container">
+  <!-- Left Side -->
+  <div class="login-left">
+    <h1>Welcome To Gym Membership Management System</h1>
+    <p>Manage your members, trainers, and classes efficiently.</p>
+  </div>
+
+  <!-- Right Side -->
+  <div class="login-right">
+    <div class="login-box">
+      <h3 class="mb-4 text-center text-dark">Sign In</h3>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="alert alert-{{ category }} text-center" role="alert">
+                {{ message }}
+              </div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+      <form method="POST" action="{{ url_for('auth.login') }}">
+        {{ form.hidden_tag() }}
+
+        <div class="mb-3">
+          {{ form.email.label(class="form-label") }}
+          {{ form.email(class="form-control", placeholder="Enter your email") }}
+          {% for error in form.email.errors %}
+            <small class="text-danger">{{ error }}</small>
+          {% endfor %}
+        </div>
+
+        <div class="mb-3">
+          {{ form.password.label(class="form-label") }}
+          {{ form.password(class="form-control", placeholder="Enter your password") }}
+          {% for error in form.password.errors %}
+            <small class="text-danger">{{ error }}</small>
+          {% endfor %}
+        </div>
+
+       
+
+        <button type="submit" class="btn btn-primary w-100 mb-3">{{ form.submit.label.text }}</button>
+
+        <div class="text-center">
+          <small>Don’t have an account? <a href="{{ url_for('auth.register') }}">Register</a></small>
+        </div>
+      </form>
+
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

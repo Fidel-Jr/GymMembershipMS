@@ -1,0 +1,167 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard | Gym Management{% endblock %}
+
+{% block content %}
+    <h2 class="mb-4">Dashboard</h2>
+    
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Active Members Card -->
+            <div class="col-xl-4 col-md-6 mb-4">
+                <div class="card border-left-primary shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                    Active Memberships</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">250</div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-users fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Total Payment Card -->
+            <div class="col-xl-4 col-md-6 mb-4">
+                <div class="card border-left-success shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                    Total Payment</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">$215,000</div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Expired Members Card -->
+            <div class="col-xl-4 col-md-6 mb-4">
+                <div class="card border-left-danger shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
+                                    Expired Memberships</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">15</div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-user-times fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Memberships Table -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                        <h6 class="m-0 font-weight-bold text-dark">Recent Memberships</h6>
+                        <a href="{{ url_for('admin.manage_memberships') }}" class="btn btn-sm btn-primary">View All</a>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered" id="recentMembershipsTable">
+                                <thead>
+                                    <tr>
+                                        <th>Member Name</th>
+                                        <th>Plan</th>
+                                        <th>Start Date</th>
+                                        <th>End Date</th>
+                                        <th>Status</th>
+                                        <th>Payment</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Most recent 5 memberships, ordered by start date -->
+                                    <tr>
+                                        <td>Robert Thomas</td>
+                                        <td>Premium Plus</td>
+                                        <td>2025-11-05</td>
+                                        <td>2026-11-05</td>
+                                        <td><span class="badge bg-success text-white">Active</span></td>
+                                        <td>$799</td>
+                                    </tr>
+                                    <tr>
+                                        <td>David Wilson</td>
+                                        <td>Premium Plus</td>
+                                        <td>2025-11-01</td>
+                                        <td>2026-11-01</td>
+                                        <td><span class="badge bg-success text-white">Active</span></td>
+                                        <td>$799</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Lisa Anderson</td>
+                                        <td>Standard</td>
+                                        <td>2025-10-10</td>
+                                        <td>2026-04-10</td>
+                                        <td><span class="badge bg-success text-white">Active</span></td>
+                                        <td>$299</td>
+                                    </tr>
+                                    <tr>
+                                        <td>John Smith</td>
+                                        <td>Premium</td>
+                                        <td>2025-10-01</td>
+                                        <td>2026-10-01</td>
+                                        <td><span class="badge bg-success text-white">Active</span></td>
+                                        <td>$599</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Sarah Johnson</td>
+                                        <td>Standard</td>
+                                        <td>2025-09-15</td>
+                                        <td>2026-03-15</td>
+                                        <td><span class="badge bg-success text-white">Active</span></td>
+                                        <td>$299</td>
+                                    </tr>
+                                     <tr>
+                                        <td>Sarah Johnson</td>
+                                        <td>Standard</td>
+                                        <td>2025-09-15</td>
+                                        <td>2026-03-15</td>
+                                        <td><span class="badge bg-success text-white">Active</span></td>
+                                        <td>$299</td>
+                                    </tr>
+                                     <tr>
+                                        <td>Sarah Johnson</td>
+                                        <td>Standard</td>
+                                        <td>2025-09-15</td>
+                                        <td>2026-03-15</td>
+                                        <td><span class="badge bg-success text-white">Active</span></td>
+                                        <td>$299</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% block extra_js %}
+    <script>
+        $(document).ready(function() {
+            $('#recentMembershipsTable').DataTable({
+                "paging": false,        // Disable pagination since we only show 5 entries
+                "searching": false,     // Disable search
+                "info": false,          // Remove "Showing X of Y entries" text
+                "ordering": false,      // Disable sorting
+                "responsive": true      // Keep it responsive
+            });
+        });
+    </script>
+    {% endblock %}
+{% endblock %}
+ 

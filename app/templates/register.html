@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register | Gym Membership System</title>
+  <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
+  <style>
+    body, html {
+      height: 100%;
+      margin: 0;
+      background-color: #f8f9fa;
+    }
+    .register-container {
+      display: flex;
+      height: 100vh;
+    }
+    .register-left {
+      flex: 1;
+      background: #1c1818;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 2rem;
+    }
+    .register-left h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+    .register-left p {
+      font-size: 1rem;
+      opacity: 0.9;
+    }
+    .register-right {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #fff;
+      padding: 3rem;
+    }
+    .register-box {
+      width: 100%;
+      max-width: 400px;
+    }
+    @media (max-width: 768px) {
+      .register-container {
+        flex-direction: column;
+      }
+      .register-left {
+        height: 35vh;
+      }
+      .register-right {
+        height: 65vh;
+      }
+    }
+    .btn-primary{
+        background-color: #1c1818 !important;
+        border: #1c1818;
+    }
+  </style>
+</head>
+<body>
+
+<div class="register-container">
+  <div class="register-left">
+    <h1>Join now! Become our newest member</h1>
+    <p>Create your account to manage members, trainers, and schedules efficiently.</p>
+  </div>
+
+  <div class="register-right">
+    <div class="register-box">
+      <h3 class="mb-4 text-center text-dark">Sign Up</h3>
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+            <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+              {{ message }}
+              <!-- <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button> -->
+            </div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+      <form method="POST" action="{{ url_for('auth.register') }}">
+        {{ form.hidden_tag() }}
+
+        <div class="mb-3">
+          <label class="form-label">Full Name</label>
+          {{ form.fullname(class="form-control", placeholder="Enter your full name") }}
+          {% for error in form.fullname.errors %}
+            <small class="text-danger">{{ error }}</small>
+          {% endfor %}
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Username</label>
+          {{ form.username(class="form-control", placeholder="Enter your username") }}
+          {% for error in form.username.errors %}
+            <small class="text-danger">{{ error }}</small>
+          {% endfor %}
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Email Address</label>
+          {{ form.email(class="form-control", placeholder="Enter your email") }}
+          {% for error in form.email.errors %}
+            <small class="text-danger">{{ error }}</small>
+          {% endfor %}
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Password</label>
+          {{ form.password(class="form-control", placeholder="Enter your password") }}
+          {% for error in form.password.errors %}
+            <small class="text-danger">{{ error }}</small>
+          {% endfor %}
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Confirm Password</label>
+          {{ form.confirm_password(class="form-control", placeholder="Re-enter your password") }}
+          {% for error in form.confirm_password.errors %}
+            <small class="text-danger">{{ error }}</small>
+          {% endfor %}
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100 mb-3">{{ form.submit.label.text }}</button>
+        <div class="text-center">
+          <small>Already have an account? <a href="{{ url_for('auth.login') }}">Login</a></small>
+        </div>
+      </form>
+
+
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

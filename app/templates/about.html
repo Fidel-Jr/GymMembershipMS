@@ -1,0 +1,21 @@
+
+
+{% extends 'base.html' %}
+
+{% block title %}Home | Gym Management{% endblock %}
+
+{% block content %}
+ <h2>Registered Users</h2>
+    <ul>
+        {% for user in users %}
+            <li>{{ user.id }} - {{ user.name }} - {{ user.email }} - {{ user.role }}</li>
+        {% endfor %}
+    </ul>
+  <div class="footer">
+    <p>
+        <footer class="footer text-center">
+            <p class="text-dark">Sidebar Navigation UI based on a free <a href="https://colorlib.com">Colorlib</a> template, modified for academic use.</p>
+        </footer>
+        </p>
+    </div>
+{% endblock %}
