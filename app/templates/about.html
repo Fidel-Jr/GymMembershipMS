@@ -1,21 +1,105 @@
-
-
-{% extends 'base.html' %}
-
-{% block title %}Home | Gym Management{% endblock %}
+{% extends "base.html" %}
+{% block title %}About — Gym Membership Management System{% endblock %}
 
 {% block content %}
- <h2>Registered Users</h2>
-    <ul>
-        {% for user in users %}
-            <li>{{ user.id }} - {{ user.name }} - {{ user.email }} - {{ user.role }}</li>
-        {% endfor %}
-    </ul>
-  <div class="footer">
+<div class="container py-5">
+  <div class="row">
+    <div class="col-md-10 mx-auto">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h1 class="mb-3">About Gym Membership Management System</h1>
+          <p class="lead">
+            <strong>Gym Membership Management System</strong> is a web-based application designed to help gym administrators efficiently manage member records, membership plans, and payment transactions in one centralized platform.
+          </p>
+
+          <hr>
+
+          <p>
+            This system eliminates the need for manual record-keeping and paper-based files by providing a digital platform where all member data, payment information, and membership status are easily accessible.
+          </p>
+
+          <p>
+            Members can register online, update their profiles, and view their membership details. 
+          </p>
+            With this system, gym admins can quickly assign memberships to new or existing users, track active and expired memberships, and record payments methods such as cash, credit card, or bank transfer. It also allows administrators to generate reports, view membership summaries, and ensure that renewals are handled on time.
+          </p>
+
+          <h4 class="mt-4">Key Features</h4>
+          <ul>
+            <li>User registration and profile management</li>
+            <li>Membership plans with duration and pricing</li>
+            <li>Payment logging and history</li>
+            <li>Membership status tracking (active / expired / due for renewal)</li>
+            <li>Administrative reports and summaries</li>
+            <li>Secure login for administrators and members</li>
+          </ul>
+
+          <h4 class="mt-4">Purpose</h4>
+          <p>
+            The main goal of the system is to streamline gym operations, reduce human error, and provide both staff and members with a convenient, transparent and centralized management tool.
+          </p>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="container-fluid">
+    <h2 class="mb-4">All Membership Renewals</h2>
+    
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-dark">Renewal History</h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="renewalsTable">
+                    <thead>
+                        <tr>
+                            <th>Member Name</th>
+                            <th>Plan</th>
+                            <th>Last Start Date</th>
+                            <th>Last End Date</th>
+                            <th>Start Date</th>
+                            <th>End Date</th>
+                            <th>Renewal Date</th>
+                            <th>Processed By</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for renewal, membership, user, plan in renewals %}
+                        <tr>
+                            <td>{{ user.full_name }}</td>
+                            <td>{{ plan.name }}</td>
+                            <td>{{ renewal.last_start_date.strftime('%Y-%m-%d') }}</td>
+                            <td>{{ renewal.last_end_date.strftime('%Y-%m-%d') }}</td>
+                            <td>{{ membership.start_date.strftime('%Y-%m-%d') }}</td>
+                            <td>{{ membership.end_date.strftime('%Y-%m-%d') }}</td>
+                            <td>{{ renewal.renewal_date.strftime('%Y-%m-%d') }}</td>
+                            <td>
+                                {% if renewal.processed_user %}
+                                    {{ renewal.processed_user.full_name }}
+                                {% else %}
+                                    N/A
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="7" class="text-center text-muted">No renewals found.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+ <div class="footer">
     <p>
         <footer class="footer text-center">
-            <p class="text-dark">Sidebar Navigation UI based on a free <a href="https://colorlib.com">Colorlib</a> template, modified for academic use.</p>
+            <p class="text-dark" style="text-decoration: underline;">Sidebar Navigation UI based on a free <a href="https://colorlib.com">Colorlib</a> template, modified for academic use.</p>
         </footer>
-        </p>
-    </div>
+    </p>
+</div>
 {% endblock %}

@@ -8,3 +8,5 @@ def register_blueprints(app):
     app.register_blueprint(admin_bp)
     app.register_blueprint(main_bp)
     app.register_blueprint(member_bp)
+    from .profile_routes import profile_bp
+    app.register_blueprint(profile_bp)

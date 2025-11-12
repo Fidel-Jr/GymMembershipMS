@@ -16,52 +16,27 @@
                     <h6 class="m-0 font-weight-bold text-dark">Assign Membership</h6>
                 </div>
                 <div class="card-body">
-                    <form id="assignMembershipForm" method="POST">
+                    <form method="POST" action="{{ url_for('admin.membership') }}">
+                        {{ form.hidden_tag() }}
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label for="memberSelect" class="form-label">Search Member</label>
-                                <select class="form-select select2-member form-control" id="memberSelect" name="member_id" required>
-                                    <option value="">Search by name or ID...</option>
-                                    <option value="1" data-email="john.smith@email.com" data-phone="(555) 123-4567">John Smith - #001</option>
-                                    <option value="2" data-email="sarah.j@email.com" data-phone="(555) 234-5678">Sarah Johnson - #002</option>
-                                    <option value="3" data-email="mbrown@email.com" data-phone="(555) 345-6789">Michael Brown - #003</option>
-                                    <option value="4" data-email="emily.d@email.com" data-phone="(555) 456-7890">Emily Davis - #004</option>
-                                    <option value="5" data-email="dwilson@emai  l.com" data-phone="(555) 567-8901">David Wilson - #005</option>
-                                    <option value="6" data-email="lisa.a@email.com" data-phone="(555) 678-9012">Lisa Anderson - #006</option>
-                                    <option value="7" data-email="james.m@email.com" data-phone="(555) 789-0123">James Martinez - #007</option>
-                                    <option value="8" data-email="jennifer.t@email.com" data-phone="(555) 890-1234">Jennifer Taylor - #008</option>
-                                    <option value="9" data-email="robert.t@email.com" data-phone="(555) 901-2345">Robert Thomas - #009</option>
-                                    <option value="10" data-email="maria.g@email.com" data-phone="(555) 012-3456">Maria Garcia - #010</option>
-                                </select>
-                                <div id="memberInfo" class="mt-2 small text-muted" style="display: none;">
-                                    <div><i class="fas fa-envelope"></i> <span id="memberEmail"></span></div>
-                                    <div><i class="fas fa-phone"></i> <span id="memberPhone"></span></div>
-                                </div>
+                                {{ form.member_id.label(class="form-label") }}
+                                {{ form.member_id(class="form-select select2-member") }}
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label for="planSelect" class="form-label">Select Plan</label>
-                                <select class="form-select form-control" id="planSelect" name="plan_id" required>
-                                    <option value="">Choose a plan...</option>
-                                    <option value="1">Standard Plan - $299</option>
-                                    <option value="2">Premium Plan - $599</option>
-                                    <option value="3">Premium Plus Plan - $799</option>
-                                </select>
+                                {{ form.plan_id.label(class="form-label") }}
+                                {{ form.plan_id(class="form-select form-control selectPlan") }}
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label for="startDate" class="form-label">Start Date</label>
-                                <input type="date" class="form-control" id="startDate" name="start_date" required>
+                                {{ form.start_date.label(class="form-label") }}
+                                {{ form.start_date(class="form-control") }}
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label for="paymentMethod" class="form-label">Payment Method</label>
-                                <select class="form-select form-control" id="paymentMethod" name="payment_method" required>
-                                    <option value="">Select payment method...</option>
-                                    <option value="cash">Cash</option>
-                                    <option value="card">Credit/Debit Card</option>
-                                    <option value="bank">Bank Transfer</option>
-                                </select>
+                                {{ form.payment_method.label(class="form-label") }}
+                                {{ form.payment_method(class="form-select form-control") }}
                             </div>
                             <div class="col-12">
-                                <button type="submit" class="btn btn-primary">Assign Membership</button>
+                                {{ form.submit(class="btn btn-primary") }}
                             </div>
                         </div>
                     </form>
@@ -71,173 +46,115 @@
     </div>
 
     <!-- Membership Plans -->
-    <div class="row">
-        <!-- Standard Plan -->
-        <div class="col-lg-4 mb-4">
-            <div class="card shadow h-100">
-                <div class="card-header py-3 bg-primary">
-                    <h6 class="m-0 font-weight-bold text-white text-center">Standard Plan</h6>
-                </div>
-                <div class="card-body">
-                    <div class="text-center mb-4">
-                        <h1 class="display-4 font-weight-bold">$299</h1>
-                        <p class="text-muted">per 6 months</p>
+        <div class="row">
+            {% for plan in plans %}
+            <div class="col-lg-4 mb-4">
+                <div class="card shadow h-100 {% if plan.name == 'Premium Plan' %}border-primary{% endif %}">
+                    <div class="card-header py-3 bg-primary">
+                        <h6 class="m-0 font-weight-bold text-white text-center">{{ plan.name }}</h6>
                     </div>
-                    <ul class="list-group list-group-flush mb-4">
-                        <li class="list-group-item">
-                            <i class="fas fa-check text-success mr-2"></i> Basic Gym Access
-                        </li>
-                        <li class="list-group-item">
-                            <i class="fas fa-check text-success mr-2"></i> Standard Equipment Usage
-                        </li>
-                        <li class="list-group-item">
-                            <i class="fas fa-check text-success mr-2"></i> Locker Room Access
-                        </li>
-                        <li class="list-group-item">
-                            <i class="fas fa-times text-danger mr-2"></i> Personal Trainer
-                        </li>
-                        <li class="list-group-item">
-                            <i class="fas fa-times text-danger mr-2"></i> Group Classes
-                        </li>
-                    </ul>
+                    <div class="card-body">
+                        <div class="text-center mb-4">
+                            <h1 class="display-4 font-weight-bold">${{ plan.price }}</h1>
+                            <p class="text-muted">per {{ plan.duration_months }} {{ 'month' if plan.duration_months == 1 else 'months' }}</p>
+                        </div>
+                        <ul class="list-group list-group-flush mb-4">
+                            {% set features = plan.features.split(',') %}
+                            {% for feature in features %}
+                                <li class="list-group-item">
+                                    <i class="fas fa-check text-success mr-2"></i> {{ feature.strip() }}
+                                </li>
+                            {% endfor %}
+                        </ul>
                     <div class="text-center">
-                        <button class="btn btn-outline-primary btn-lg" data-plan="1">Select Plan</button>
+                            <button class="btn btn-outline-primary btn-lg" data-plan="{{ plan.id }}">Select Plan</button>
+                        </div>
                     </div>
                 </div>
             </div>
+            {% endfor %}
         </div>
 
-        <!-- Premium Plan -->
-        <div class="col-lg-4 mb-4">
-            <div class="card shadow h-100 border-primary">
-                <div class="card-header py-3 bg-primary">
-                    <h6 class="m-0 font-weight-bold text-white text-center">Premium Plan</h6>
-                </div>
-                <div class="card-body">
-                    <div class="text-center mb-4">
-                        <h1 class="display-4 font-weight-bold">$599</h1>
-                        <p class="text-muted">per year</p>
-                    </div>
-                    <ul class="list-group list-group-flush mb-4">
-                        <li class="list-group-item">
-                            <i class="fas fa-check text-success mr-2"></i> 24/7 Gym Access
-                        </li>
-                        <li class="list-group-item">
-                            <i class="fas fa-check text-success mr-2"></i> All Equipment Access
-                        </li>
-                        <li class="list-group-item">
-                            <i class="fas fa-check text-success mr-2"></i> Locker Room Access
-                        </li>
-                        <li class="list-group-item">
-                            <i class="fas fa-check text-success mr-2"></i> Group Classes
-                        </li>
-                        <li class="list-group-item">
-                            <i class="fas fa-times text-danger mr-2"></i> Personal Trainer
-                        </li>
-                    </ul>
-                    <div class="text-center">
-                        <button class="btn btn-primary btn-lg" data-plan="2">Select Plan</button>
-                    </div>
-                </div>
-            </div>
-        </div>
+        
 
-        <!-- Premium Plus Plan -->
-        <div class="col-lg-4 mb-4">
-            <div class="card shadow h-100">
-                <div class="card-header py-3 bg-primary">
-                    <h6 class="m-0 font-weight-bold text-white text-center">Premium Plus Plan</h6>
-                </div>
-                <div class="card-body">
-                    <div class="text-center mb-4">
-                        <h1 class="display-4 font-weight-bold">$799</h1>
-                        <p class="text-muted">per year</p>
-                    </div>
-                    <ul class="list-group list-group-flush mb-4">
-                        <li class="list-group-item">
-                            <i class="fas fa-check text-success mr-2"></i> 24/7 Gym Access
-                        </li>
-                        <li class="list-group-item">
-                            <i class="fas fa-check text-success mr-2"></i> All Equipment Access
-                        </li>
-                        <li class="list-group-item">
-                            <i class="fas fa-check text-success mr-2"></i> Premium Locker
-                        </li>
-                        <li class="list-group-item">
-                            <i class="fas fa-check text-success mr-2"></i> Unlimited Group Classes
-                        </li>
-                        <li class="list-group-item">
-                            <i class="fas fa-check text-success mr-2"></i> Personal Trainer (2x/month)
-                        </li>
-                    </ul>
-                    <div class="text-center">
-                        <button class="btn btn-outline-primary btn-lg" data-plan="3">Select Plan</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 </div>
 
 {% block extra_js %}
 <script>
-    $(document).ready(function() {
-        // Initialize Select2 for member search
-        $('.select2-member').select2({
-            theme: 'bootstrap-5',
-            placeholder: 'Search by name or ID...',
-            allowClear: true,
-            width: '100%',
-            escapeMarkup: function(markup) {
-                return markup;
+$(document).ready(function() {
+    $('.select2-member').select2({
+        theme: 'bootstrap-5',
+        placeholder: 'Search by name or ID...',
+        allowClear: true,
+        width: '100%',
+        minimumInputLength: 1,
+        ajax: {
+            url: '{{ url_for("admin.api_users") }}',
+            dataType: 'json',
+            delay: 250,
+            data: function(params) {
+                return { q: params.term };
             },
-            templateResult: function(data) {
-                if (!data.id) return data.text;
-                return $('<div>' + data.text + '</div>');
+            processResults: function(data) {
+                console.log('API returned:', data); // ✅ Debug log
+                if (!data || !data.results) {
+                    return { results: [] };
+                }
+                // Map results if text is not present
+                return {
+                    results: data.results.map(function(item) {
+                        return {
+                            id: item.id,
+                            text: item.text || `${item.full_name} (#${item.id})`,
+                            email: item.email,
+                            phone: item.phone
+                        };
+                    })
+                };
+            },
+            cache: true,
+            error: function(xhr, status, error) {
+                console.error('Select2 AJAX error:', status, error, xhr.responseText);
             }
-        });
-
-        // Handle member selection to show additional info
-        $('#memberSelect').on('change', function() {
-            const selectedOption = $(this).find('option:selected');
-            const memberInfo = $('#memberInfo');
-            
-            if (selectedOption.val()) {
-                $('#memberEmail').text(selectedOption.data('email'));
-                $('#memberPhone').text(selectedOption.data('phone'));
-                memberInfo.slideDown();
-            } else {
-                memberInfo.slideUp();
-            }
-        });
-        // Initialize date picker with today's date
-        const today = new Date().toISOString().split('T')[0];
-        $('#startDate').val(today);
-
-        // Handle plan selection from cards
+        },
+        templateResult: function(item) {
+            if (!item.id) return item.text;
+            var email = item.email ? `<div><i class="fas fa-envelope"></i> ${item.email}</div>` : '';
+            var phone = item.phone ? `<div><i class="fas fa-phone"></i> ${item.phone}</div>` : '';
+            return $(`<div>${item.text}${email}${phone}</div>`);
+        },
+/*************  ✨ Windsurf Command ⭐  *************/
+        /**
+         * Return the text or ID of the selected item to be displayed in the selection field.
+         * This is called after the item is selected, and before the item is rendered in the selection field.
+         * @param {Object} item - The selected item
+         * @returns {string} - The text to be displayed in the selection field
+         */
+/*******  d752e90f-676b-45e4-87c6-f90a0426351e  *******/
+        templateSelection: function(item) {
+            return item.text || item.id;
+        }
+    });
+    // Handle plan selection from cards
         $('.card button[data-plan]').click(function() {
             const planId = $(this).data('plan');
-            $('#planSelect').val(planId).trigger('change');
+            $('.selectPlan').val(planId).trigger('change');
             $('html, body').animate({
                 scrollTop: $("#assignMembershipForm").offset().top - 100
             }, 800);
         });
-
-        // Form submission
-        $('#assignMembershipForm').submit(function(e) {
-            e.preventDefault();
-            // Add your form submission logic here
-            alert('Membership assigned successfully!');
-            this.reset();
-            $('#startDate').val(today);
-        });
-
-        // Optional: Add hover effects to plan cards
-        $('.card').hover(
-            function() { $(this).addClass('shadow-lg'); },
-            function() { $(this).removeClass('shadow-lg'); }
-        );
+    // Handle member info display
+    $('#memberSelect').on('select2:select', function(e) {
+        const data = e.params.data;
+        $('#memberEmail').text(data.email || '');
+        $('#memberPhone').text(data.phone || '');
+        $('#memberInfo').slideDown();
     });
+    $('#memberSelect').on('select2:clear', function() {
+        $('#memberInfo').slideUp();
+    });
+});
 </script>
+
 {% endblock %}
 {% endblock %}

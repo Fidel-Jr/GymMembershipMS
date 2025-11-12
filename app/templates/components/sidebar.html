@@ -6,22 +6,22 @@
       {% if current_user.is_authenticated %}
         {% if current_user.role == 'admin' %}
         <!-- ADMIN SIDEBAR -->
-      <li class="{{ 'active' if request.endpoint == 'main.admin_dashboard' }}">
+      <li class="{{ 'active' if request.endpoint == 'admin.admin_dashboard' }}">
         <a href="{{ url_for('admin.admin_dashboard') }}">Home</a>
       </li>
-      <li class="{{ 'active' if request.endpoint == 'main.membership' }}">
+      <li class="{{ 'active' if request.endpoint == 'admin.membership' }}">
         <a href="{{ url_for('admin.membership') }}">Membership</a>
       </li>
-      <li class="{{ 'active' if request.endpoint and request.endpoint.startswith('main.manage') }}">
+      <li class="{{ 'active' if request.endpoint and request.endpoint.startswith('admin.manage') }}">
         <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Manage</a>
-        <ul class="collapse list-unstyled {{ 'show' if request.endpoint and request.endpoint.startswith('main.manage') }}" id="pageSubmenu">
-          <li class="{{ 'active' if request.endpoint == 'main.manage_members' }}">
-            <a href="{{ url_for('admin.manage_members') }}">Members</a>
+        <ul class="collapse list-unstyled {{ 'show' if request.endpoint and request.endpoint.startswith('admin.manage') }}" id="pageSubmenu">
+          <li class="{{ 'active' if request.endpoint == 'admin.manage_members' }}">
+            <a href="{{ url_for('admin.manage_members') }}">Users </a>
           </li>
-          <li class="{{ 'active' if request.endpoint == 'main.manage_memberships' }}">
+          <li class="{{ 'active' if request.endpoint == 'admin.manage_memberships' }}">
             <a href="{{ url_for('admin.manage_memberships') }}">Memberships</a>
           </li>
-          <li class="{{ 'active' if request.endpoint == 'main.manage_plans' }}">
+          <li class="{{ 'active' if request.endpoint == 'admin.manage_plans' }}">
             <a href="{{ url_for('admin.manage_plans') }}">Plans</a>
           </li>
         </ul>

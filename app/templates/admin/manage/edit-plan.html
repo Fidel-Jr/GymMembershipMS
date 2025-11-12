@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block title %}Manage Plans | Gym Management{% endblock %}
+
+{% block content %}
+    <div class="container mt-4">
+    <h3 class="mb-4">Edit Membership Plan</h3>
+    <form method="POST">
+        {{ form.hidden_tag() }}
+
+        <div class="mb-3">
+        {{ form.name.label(class="form-label") }}
+        {{ form.name(class="form-control") }}
+        </div>
+
+        <div class="mb-3">
+        {{ form.features.label(class="form-label") }}
+        {{ form.features(class="form-control") }}
+        </div>
+
+        <div class="mb-3">
+        {{ form.price.label(class="form-label") }}
+        {{ form.price(class="form-control") }}
+        </div>
+
+        <div class="mb-3">
+        {{ form.duration_months.label(class="form-label") }}
+        {{ form.duration_months(class="form-select form-control") }}
+        </div>
+
+        <div class="mb-3">
+        {{ form.status.label(class="form-label") }}
+        {{ form.status(class="form-select form-control") }}
+        </div>
+
+        <button type="submit" class="btn btn-primary">Update</button>
+        <a href="{{ url_for('admin.manage_plans') }}" class="btn btn-secondary">Cancel</a>
+    </form>
+    </div>
+{% endblock %}

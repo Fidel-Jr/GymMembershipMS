@@ -4,6 +4,13 @@
 
 {% block content %}
 <div class="container-fluid">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+            <div class="alert alert-{{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %} 
     <div class="card shadow mb-4">
         <div class="card-header py-3 d-flex justify-content-between align-items-center">
             <h6 class="m-0 font-weight-bold text-primary">Manage Members</h6>
@@ -23,35 +30,31 @@
                         </tr>
                     </thead>
                     <tbody>
+                        {% for member in members %}
                         <tr>
-                            <td>001</td>
-                            <td>John Smith</td>
-                            <td>john.smith@email.com</td>
-                            <td>(555) 123-4567</td>
-                            <td>2025-01-15</td>
-                            <td><span class="badge bg-success">Active</span></td>
+                            <td>{{ '%03d' % member.id }}</td>
+                            <td>{{ member.full_name }}</td>
+                            <td>{{ member.email }}</td>
+                            <td>{{ member.contact_number }}</td>
+                            <td>{{ member.created_at.strftime('%Y-%m-%d') if member.created_at else '' }}</td>
                             <td>
-                                <button class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#viewModal"><i class="fas fa-eye"></i></button>
-                                <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#editModal"><i class="fas fa-edit"></i></button>
-                                <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal"><i class="fas fa-trash"></i></button>
+                                {% if member.is_active %}
+                                    <span class="badge bg-success">Active</span>
+                                {% else %}
+                                    <span class="badge bg-danger">Inactive</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="{{ url_for('admin.view_member', member_id=member.id) }}" class="btn btn-sm btn-info"><i class="fas fa-eye"></i></a>
+                                <a href="{{ url_for('admin.edit_member', member_id=member.id) }}" class="btn btn-sm btn-primary"><i class="fas fa-edit"></i></a>
+                                <!-- <form method="POST" action="{{ url_for('admin.delete_member', member_id=member.id) }}" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this member?');">
+                                    <button type="submit" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
+                                </form> -->
                             </td>
                         </tr>
-                        <!-- Add more dummy data -->
-                        {% for i in range(2, 11) %}
+                        {% else %}
                         <tr>
-                            <td>00{{ i }}</td>
-                            <td>Member {{ i }}</td>
-                            <td>member{{ i }}@email.com</td>
-                            <td>(555) {{ i }}23-4567</td>
-                            <td>2025-0{{ i }}-01</td>
-                            <td><span class="badge {% if i % 3 == 0 %}bg-warning{% elif i % 4 == 0 %}bg-danger{% else %}bg-success{% endif %}">
-                                {% if i % 3 == 0 %}Pending{% elif i % 4 == 0 %}Inactive{% else %}Active{% endif %}
-                            </span></td>
-                            <td>
-                                <button class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#viewModal"><i class="fas fa-eye"></i></button>
-                                <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#editModal"><i class="fas fa-edit"></i></button>
-                                <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal"><i class="fas fa-trash"></i></button>
-                            </td>
+                            <td colspan="7" class="text-center text-muted">No members found.</td>
                         </tr>
                         {% endfor %}
                     </tbody>

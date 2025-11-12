@@ -6,6 +6,13 @@
     <h2 class="mb-4">Dashboard</h2>
     
     <div class="container-fluid">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+            <div class="alert alert-{{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %} 
         <div class="row">
             <!-- Active Members Card -->
             <div class="col-xl-4 col-md-6 mb-4">
@@ -15,7 +22,7 @@
                             <div class="col mr-2">
                                 <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
                                     Active Memberships</div>
-                                <div class="h5 mb-0 font-weight-bold text-gray-800">250</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">{{ active_count }}</div>
                             </div>
                             <div class="col-auto">
                                 <i class="fas fa-users fa-2x text-gray-300"></i>
@@ -33,7 +40,7 @@
                             <div class="col mr-2">
                                 <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
                                     Total Payment</div>
-                                <div class="h5 mb-0 font-weight-bold text-gray-800">$215,000</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">${{ '{:,.2f}'.format(total_payment) }}</div>
                             </div>
                             <div class="col-auto">
                                 <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
@@ -51,7 +58,7 @@
                             <div class="col mr-2">
                                 <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
                                     Expired Memberships</div>
-                                <div class="h5 mb-0 font-weight-bold text-gray-800">15</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">{{ expired_count }}</div>
                             </div>
                             <div class="col-auto">
                                 <i class="fas fa-user-times fa-2x text-gray-300"></i>
@@ -84,69 +91,113 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <!-- Most recent 5 memberships, ordered by start date -->
+                                    {% for membership, user, plan in recent_memberships %}
                                     <tr>
-                                        <td>Robert Thomas</td>
-                                        <td>Premium Plus</td>
-                                        <td>2025-11-05</td>
-                                        <td>2026-11-05</td>
-                                        <td><span class="badge bg-success text-white">Active</span></td>
-                                        <td>$799</td>
+                                        <td>{{ user.full_name }}</td>
+                                        <td>{{ plan.name }}</td>
+                                        <td>{{ membership.start_date.strftime('%Y-%m-%d') }}</td>
+                                        <td>{{ membership.end_date.strftime('%Y-%m-%d') }}</td>
+                                        <td>
+                                            {% if membership.status == 'active' %}
+                                                <span class="badge bg-success text-white">Active</span>
+                                            {% elif membership.status == 'expired' %}
+                                                <span class="badge bg-danger text-white">Expired</span>
+                                            {% elif membership.status == 'pending' %}
+                                                <span class="badge bg-warning text-dark">Pending</span>
+                                            {% else %}
+                                                <span class="badge bg-secondary text-white">{{ membership.status|capitalize }}</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            ${{ plan.price }}
+                                            
+                                        </td>
                                     </tr>
+                                    {% else %}
                                     <tr>
-                                        <td>David Wilson</td>
-                                        <td>Premium Plus</td>
-                                        <td>2025-11-01</td>
-                                        <td>2026-11-01</td>
-                                        <td><span class="badge bg-success text-white">Active</span></td>
-                                        <td>$799</td>
+                                        <td colspan="6" class="text-center text-muted">No recent memberships found.</td>
                                     </tr>
-                                    <tr>
-                                        <td>Lisa Anderson</td>
-                                        <td>Standard</td>
-                                        <td>2025-10-10</td>
-                                        <td>2026-04-10</td>
-                                        <td><span class="badge bg-success text-white">Active</span></td>
-                                        <td>$299</td>
-                                    </tr>
-                                    <tr>
-                                        <td>John Smith</td>
-                                        <td>Premium</td>
-                                        <td>2025-10-01</td>
-                                        <td>2026-10-01</td>
-                                        <td><span class="badge bg-success text-white">Active</span></td>
-                                        <td>$599</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Sarah Johnson</td>
-                                        <td>Standard</td>
-                                        <td>2025-09-15</td>
-                                        <td>2026-03-15</td>
-                                        <td><span class="badge bg-success text-white">Active</span></td>
-                                        <td>$299</td>
-                                    </tr>
-                                     <tr>
-                                        <td>Sarah Johnson</td>
-                                        <td>Standard</td>
-                                        <td>2025-09-15</td>
-                                        <td>2026-03-15</td>
-                                        <td><span class="badge bg-success text-white">Active</span></td>
-                                        <td>$299</td>
-                                    </tr>
-                                     <tr>
-                                        <td>Sarah Johnson</td>
-                                        <td>Standard</td>
-                                        <td>2025-09-15</td>
-                                        <td>2026-03-15</td>
-                                        <td><span class="badge bg-success text-white">Active</span></td>
-                                        <td>$299</td>
-                                    </tr>
+                                    {% endfor %}
                                 </tbody>
                             </table>
                         </div>
                     </div>
                 </div>
+                <!-- Expiring or Expired Memberships Table (priority: expiring) -->
+                <div class="row mt-4">
+                <div class="col-12">
+                    <div class="card shadow mb-4 border-left-warning">
+                    <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                        <h6 class="m-0 font-weight-bold text-dark">
+                            {% if expiring_members and expiring_members|length > 0 %}
+                                Memberships Expiring Soon
+                            {% else %}
+                                Recently Expired Memberships
+                            {% endif %}
+                        </h6>
+                        <a href="{{ url_for('admin.view_expiring_and_expired') }}" class="btn btn-sm btn-primary">View All Expiring/Expired</a>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                        <table class="table table-bordered" id="expiringOrExpiredTable">
+                            <thead class="table-warning">
+                            <tr>
+                                <th>Member Name</th>
+                                <th>Plan</th>
+                                <th>End Date</th>
+                                <th>{% if expiring_members and expiring_members|length > 0 %}Days Left{% else %}Status{% endif %}</th>
+                                {% if expiring_members and expiring_members|length > 0 %}
+                                    <th>Action</th>
+                                {% endif %}
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% if expiring_members and expiring_members|length > 0 %}
+                                {% for m in expiring_members[:5] %}
+                                <tr>
+                                    <td>{{ m.user.full_name }}</td>
+                                    <td>{{ m.plan.name }}</td>
+                                    <td>{{ m.end_date.strftime('%Y-%m-%d') }}</td>
+                                    <td>
+                                    {% set days_left = (m.end_date.date() - current_date).days %}
+                                    {% if days_left > 0 %}
+                                        {{ days_left }} day{{ 's' if days_left > 1 else '' }}
+                                    {% else %}
+                                        Expired
+                                    {% endif %}
+                                    </td>
+                                    <td>
+                                        <form method="POST" action="{{ url_for('admin.renew_membership', membership_id=m.id) }}" style="display:inline;">
+                                            <button type="submit" class="btn btn-sm btn-warning ms-2 text-light">Renew</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            {% else %}
+                                {% for m, user, plan in expired_members %}
+                                <tr>
+                                    <td>{{ user.full_name }}</td>
+                                    <td>{{ plan.name }}</td>
+                                    <td>{{ m.end_date.strftime('%Y-%m-%d') }}</td>
+                                    <td>Expired</td>
+                                </tr>
+                                {% else %}
+                                <tr>
+                                    <td colspan="4" class="text-center text-muted">No expired memberships found.</td>
+                                </tr>
+                                {% endfor %}
+                            {% endif %}
+                            </tbody>
+                        </table>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+                </div>
             </div>
+           
+
+            
         </div>
     </div>
 
@@ -164,4 +215,3 @@
     </script>
     {% endblock %}
 {% endblock %}
- 
