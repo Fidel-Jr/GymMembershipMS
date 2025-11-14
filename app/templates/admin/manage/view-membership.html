@@ -11,7 +11,11 @@
         <div class="card-body">
             <div class="row mb-4">
                 <div class="col-md-3 text-center">
-                    <img src="{{ url_for('static', filename='images/default-user.png') }}" alt="User Image" class="img-fluid rounded-circle mb-2" style="width: 120px; height: 120px; object-fit: cover;">
+                    {% if user.image %}
+                        <img src="{{ url_for('static', filename='img/users/' ~ user.image) }}" alt="User Image" class="img-fluid rounded-circle mb-2" style="width: 120px; height: 120px; object-fit: cover;">
+                    {% else %}
+                        <img src="{{ url_for('static', filename='images/default-user.png') }}" alt="User Image" class="img-fluid rounded-circle mb-2" style="width: 120px; height: 120px; object-fit: cover;">
+                    {% endif %}
                     <h6 class="mt-2">{{ user.full_name }}</h6>
                 </div>
                 <div class="col-md-9">
@@ -53,13 +57,11 @@
                         <div class="col-4 fw-bold">Status:</div>
                         <div class="col-8">
                             {% if membership.status == 'active' %}
-                                <span class="badge bg-success">Active</span>
+                                <span class="badge bg-success text-light">Active</span>
                             {% elif membership.status == 'expired' %}
-                                <span class="badge bg-danger">Expired</span>
-                            {% elif membership.status == 'pending' %}
-                                <span class="badge bg-warning text-dark">Pending</span>
+                                <span class="badge bg-danger text-light">Expired</span>
                             {% else %}
-                                <span class="badge bg-secondary">{{ membership.status|capitalize }}</span>
+                                <span class="badge bg-secondary text-light">{{ membership.status|capitalize }}</span>
                             {% endif %}
                         </div>
                     </div>
@@ -67,11 +69,11 @@
                         <div class="col-4 fw-bold">Payment Method:</div>
                         <div class="col-8">
                             {% if membership.paymentMethod == 'cash' %}
-                                <span class="badge bg-success">Cash</span>
+                                <span class="badge bg-success text-light">Cash</span>
                             {% elif membership.paymentMethod == 'card' %}
-                                <span class="badge bg-info text-dark">Card</span>
+                                <span class="badge bg-info text-light">Card</span>
                             {% elif membership.paymentMethod == 'bank' %}
-                                <span class="badge bg-primary">Bank</span>
+                                <span class="badge bg-primary text-light">Bank</span>
                             {% else %}
                                 <span class="badge bg-secondary">{{ membership.paymentMethod }}</span>
                             {% endif %}

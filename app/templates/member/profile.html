@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block title %}My Profile | Gym Management{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card shadow">
+        <div class="card-header">
+            <h5 class="mb-0">My Profile</h5>
+        </div>
+        <div class="card-body">
+            <form method="POST" enctype="multipart/form-data">
+                {{ form.hidden_tag() }}
+                <div class="row mb-3">
+                    <div class="col-md-3">
+                        {% if user.image %}
+                            <img src="{{ url_for('static', filename='img/users/' ~ user.image) }}" alt="avatar" class="img-thumbnail" style="width:150px; height:150px; object-fit:cover;">
+                        {% else %}
+                            <img src="{{ url_for('static', filename='img/placeholder.svg') }}" alt="avatar" class="img-thumbnail" style="width:150px; height:150px; object-fit:cover;">
+                        {% endif %}
+                    </div>
+                    <div class="col-md-9">
+                        <div class="mb-3">
+                            <label class="form-label">Full Name</label>
+                            {{ form.full_name(class="form-control") }}
+                            {% for error in form.full_name.errors %}
+                                <small class="text-danger">{{ error }}</small>
+                            {% endfor %}
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            {{ form.email(class="form-control") }}
+                            {% for error in form.email.errors %}
+                                <small class="text-danger">{{ error }}</small>
+                            {% endfor %}
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Phone</label>
+                            {{ form.contact_number(class="form-control") }}
+                            {% for error in form.contact_number.errors %}
+                                <small class="text-danger">{{ error }}</small>
+                            {% endfor %}
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">New Password</label>
+                            {{ form.password(class="form-control") }}
+                            {% for error in form.password.errors %}
+                                <small class="text-danger">{{ error }}</small>
+                            {% endfor %}
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Profile Image</label>
+                            {{ form.image(class="form-control") }}
+                            {% for error in form.image.errors %}
+                                <small class="text-danger">{{ error }}</small>
+                            {% endfor %}
+                        </div>
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

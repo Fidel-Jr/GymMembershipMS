@@ -1,29 +1,42 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash, current_app
+from flask import Blueprint, render_template, redirect, url_for, flash, request, current_app
 from flask_login import login_required, current_user
-from app.models import db, User
+from app.models import User, db
+from app.forms import ProfileForm
 import os
 from werkzeug.utils import secure_filename
+from datetime import datetime
 
 profile_bp = Blueprint('profile', __name__, template_folder='templates')
 
+# Profile view and update (for logged-in user)
 @profile_bp.route('/profile', methods=['GET', 'POST'])
 @login_required
 def profile():
-    user = User.query.get(current_user.id)
-    if request.method == 'POST':
-        user.full_name = request.form.get('full_name', user.full_name)
-        user.email = request.form.get('email', user.email)
-        user.contact_number = request.form.get('contact_number', user.contact_number)
-        # Handle image upload
-        image_file = request.files.get('image')
-        if image_file and image_file.filename:
-            filename = secure_filename(image_file.filename)
-            upload_folder = os.path.join(current_app.root_path, 'static', 'profile_images')
-            os.makedirs(upload_folder, exist_ok=True)
-            image_path = os.path.join(upload_folder, filename)
-            image_file.save(image_path)
-            user.image = filename
-        db.session.commit()
-        flash('Profile updated successfully!', 'success')
-        return redirect(url_for('profile.profile'))
-    return render_template('profile/profile.html', user=user)
+	user = User.query.get_or_404(current_user.id)
+	form = ProfileForm(obj=user)
+	if form.validate_on_submit():
+		user.full_name = form.full_name.data
+		user.email = form.email.data
+		user.contact_number = form.contact_number.data
+		user.role = form.role.data
+		# Password update (optional)
+		if form.password.data:
+			user.set_password(form.password.data)
+		# Handle profile image upload
+		if form.image.data and hasattr(form.image.data, "filename"):
+			file = form.image.data
+			filename = secure_filename(file.filename)
+
+			upload_folder = os.path.join(current_app.root_path, 'static', 'img', 'users')
+			os.makedirs(upload_folder, exist_ok=True)
+
+			prefixed = f"u{user.id}_{int(datetime.utcnow().timestamp())}_{filename}"
+			filepath = os.path.join(upload_folder, prefixed)
+
+			file.save(filepath)
+			user.image = prefixed
+
+		db.session.commit()
+		flash('Profile updated successfully!', 'success')
+		return redirect(url_for('profile.profile'))
+	return render_template('profile/profile.html', form=form, user=user)

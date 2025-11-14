@@ -9,7 +9,7 @@
         <div class="card-body">
           <h1 class="mb-3">About Gym Membership Management System</h1>
           <p class="lead">
-            <strong>Gym Membership Management System</strong> is a web-based application designed to help gym administrators efficiently manage member records, membership plans, and payment transactions in one centralized platform.
+            <strong>Gym Membership Management System</strong> is a web-based application designed to help gym administrators efficiently manage member records, membership plans, and payment information in one centralized platform.
           </p>
 
           <hr>
@@ -28,7 +28,7 @@
           <ul>
             <li>User registration and profile management</li>
             <li>Membership plans with duration and pricing</li>
-            <li>Payment logging and history</li>
+            <!-- <li>Payment logging and history</li> -->
             <li>Membership status tracking (active / expired / due for renewal)</li>
             <li>Administrative reports and summaries</li>
             <li>Secure login for administrators and members</li>
@@ -44,61 +44,11 @@
     </div>
   </div>
 </div>
-<div class="container-fluid">
-    <h2 class="mb-4">All Membership Renewals</h2>
-    
-    <div class="card shadow mb-4">
-        <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-dark">Renewal History</h6>
-        </div>
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-bordered" id="renewalsTable">
-                    <thead>
-                        <tr>
-                            <th>Member Name</th>
-                            <th>Plan</th>
-                            <th>Last Start Date</th>
-                            <th>Last End Date</th>
-                            <th>Start Date</th>
-                            <th>End Date</th>
-                            <th>Renewal Date</th>
-                            <th>Processed By</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for renewal, membership, user, plan in renewals %}
-                        <tr>
-                            <td>{{ user.full_name }}</td>
-                            <td>{{ plan.name }}</td>
-                            <td>{{ renewal.last_start_date.strftime('%Y-%m-%d') }}</td>
-                            <td>{{ renewal.last_end_date.strftime('%Y-%m-%d') }}</td>
-                            <td>{{ membership.start_date.strftime('%Y-%m-%d') }}</td>
-                            <td>{{ membership.end_date.strftime('%Y-%m-%d') }}</td>
-                            <td>{{ renewal.renewal_date.strftime('%Y-%m-%d') }}</td>
-                            <td>
-                                {% if renewal.processed_user %}
-                                    {{ renewal.processed_user.full_name }}
-                                {% else %}
-                                    N/A
-                                {% endif %}
-                            </td>
-                        </tr>
-                        {% else %}
-                        <tr>
-                            <td colspan="7" class="text-center text-muted">No renewals found.</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-</div>
+
  <div class="footer">
     <p>
         <footer class="footer text-center">
-            <p class="text-dark" style="text-decoration: underline;">Sidebar Navigation UI based on a free <a href="https://colorlib.com">Colorlib</a> template, modified for academic use.</p>
+            <p class="text-dark" style="text-decoration: underline;">Sidebar Navigation UI is based on a free <a href="https://colorlib.com">Colorlib</a> template, modified for academic use.</p>
         </footer>
     </p>
 </div>

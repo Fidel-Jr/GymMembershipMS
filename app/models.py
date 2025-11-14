@@ -18,7 +18,7 @@ class User(db.Model, UserMixin):
     password_hash = db.Column(db.String(200), nullable=False)
     role = db.Column(db.String(20), nullable=False, default='member')  # 'admin' or 'member'
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
-    image = db.Column(db.String(255))  # stores filename of profile image
+    image = db.Column(db.String(200), nullable=True)  # filename for profile image
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)

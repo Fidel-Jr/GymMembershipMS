@@ -6,6 +6,8 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, FloatField, SelectField, DateField
 from wtforms.validators import DataRequired, Email, Length, EqualTo
 from app.models import MembershipPlan, User
+from flask_wtf.file import FileField, FileAllowed
+from werkzeug.utils import secure_filename
 
 # -----------------------
 # Login Form
@@ -87,5 +89,17 @@ class MemberEditForm(FlaskForm):
     full_name = StringField('Full Name', validators=[DataRequired(), Length(min=3, max=100)])
     email = StringField('Email', validators=[DataRequired(), Email()])
     contact_number = StringField('Phone', validators=[Length(max=20)])
+    role = SelectField('Role', choices=[('admin', 'Admin'), ('member', 'Member')])
     is_active = SelectField('Status', choices=[('1', 'Active'), ('0', 'Inactive')], default='1')
+    image = FileField('Profile Image', validators=[FileAllowed(['jpg', 'jpeg', 'png', 'gif'], 'Images only!')])
+    submit = SubmitField('Save Changes')
+
+
+class ProfileForm(FlaskForm):
+    full_name = StringField('Full Name', validators=[DataRequired(), Length(min=3, max=100)])
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    contact_number = StringField('Phone', validators=[Length(max=20)])
+    role = SelectField('Role', choices=[('admin', 'Admin'), ('member', 'Member')])
+    password = PasswordField('New Password (leave blank to keep current)', validators=[Length(min=0)])
+    image = FileField('Profile Image', validators=[FileAllowed(['jpg', 'jpeg', 'png', 'gif'], 'Images only!')])
     submit = SubmitField('Save Changes')

@@ -15,10 +15,10 @@
 
         
         <div class="card-header py-3 d-flex justify-content-between align-items-center">
-            <h6 class="m-0 font-weight-bold text-primary">Manage Memberships</h6>
-            <a href="{{ url_for('admin.view_expiring_and_expired') }}" class="btn btn-sm btn-warning ms-2 text-light">
+            <h6 class="m-0 font-weight-bold text-dark">Manage Memberships</h6>
+            <!-- <a href="{{ url_for('admin.manage_renewal') }}" class="btn btn-sm btn-warning ms-2 text-light">
                 <i class="fas fa-exclamation-triangle"></i> Expiring/Expired Memberships
-            </a>
+            </a> -->
         </div>
         <div class="card-body">
             <div class="table-responsive">
@@ -82,9 +82,7 @@
                             </td>
                         </tr>
                         {% else %}
-                        <tr>
-                            <td colspan="8" class="text-center text-muted">No memberships found.</td>
-                        </tr>
+                            No memberships found.
                         {% endfor %}
                     </tbody>
                 </table>

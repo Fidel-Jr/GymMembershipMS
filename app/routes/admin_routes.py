@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, redirect, url_for, flash, request , session, jsonify
+from flask import Blueprint, render_template, redirect, url_for, flash, request , session, jsonify, current_app
 from app.models import User
 from flask_login import login_required
 from app.utils.decorators import role_required
@@ -8,6 +8,8 @@ from flask_login import current_user
 from dateutil.relativedelta import relativedelta
 from sqlalchemy.exc import IntegrityError
 from datetime import datetime, timedelta
+import os
+from werkzeug.utils import secure_filename
 from sqlalchemy.orm import aliased
 
 admin_bp = Blueprint('admin', __name__, template_folder='templates')
@@ -48,6 +50,7 @@ def admin_dashboard():
         db.session.query(Membership, User, MembershipPlan)
         .join(User, Membership.member_id == User.id)
         .join(MembershipPlan, Membership.plan_id == MembershipPlan.id)
+        .filter(Membership.status == 'active' and User.role == 'member') # ✅ Only active memberships
         .order_by(Membership.start_date.desc())
         .limit(5)
         .all()
@@ -67,7 +70,7 @@ def admin_dashboard():
     # 🔸 Get counts and total payments
     active_count = db.session.query(Membership).filter(Membership.status == 'active').count()
     expired_count = db.session.query(Membership).filter(Membership.status == 'Expired').count()
-    total_payment = db.session.query(db.func.sum(MembershipPlan.price)).join(Membership, Membership.plan_id == MembershipPlan.id).filter(Membership.status == 'active').scalar() or 0
+    total_payment = db.session.query(db.func.sum(MembershipPlan.price)).join(Membership, Membership.plan_id == MembershipPlan.id).scalar() or 0
 
     return render_template(
         'admin/dashboard.html',
@@ -79,7 +82,6 @@ def admin_dashboard():
         total_payment=total_payment,
         current_date=today
     )
-
 
 
 
@@ -354,6 +356,19 @@ def edit_member(member_id):
         member.email = form.email.data
         member.contact_number = form.contact_number.data
         member.is_active = True if form.is_active.data == '1' else False
+        member.role = form.role.data
+        # Handle profile image upload (admin)
+        if form.image.data and hasattr(form.image.data, "filename"):
+            file = form.image.data
+            filename = secure_filename(file.filename)
+            # create directory if not exists
+            upload_folder = os.path.join(current_app.root_path, 'static', 'img', 'users')
+            os.makedirs(upload_folder, exist_ok=True)
+            # prefix with member id and timestamp to avoid clashes
+            prefixed = f"u{member.id}_{int(datetime.utcnow().timestamp())}_{filename}"
+            filepath = os.path.join(upload_folder, prefixed)
+            file.save(filepath)
+            member.image = prefixed
         db.session.commit()
         flash('Member updated successfully!', 'success')
         return redirect(url_for('admin.manage_members'))
@@ -384,7 +399,7 @@ def renew_membership(membership_id):
     membership = Membership.query.get_or_404(membership_id)
     member = User.query.get(membership.member_id)
     plans = MembershipPlan.query.all()
-    today = datetime.today().date()
+    today = datetime.today().date() 
     
      # Prevent renewing if membership is still active
     if membership.end_date and membership.end_date.date() > today:
@@ -393,8 +408,14 @@ def renew_membership(membership_id):
 
     if request.method == 'POST':
         plan_id = request.form.get('plan_id', membership.plan_id)
-        start_date = membership.end_date if membership.end_date else today
         plan = MembershipPlan.query.get(plan_id)
+
+        # ✅ Set start_date to today if membership has expired, otherwise use end_date
+        if membership.end_date and membership.end_date.date() > today:  
+            start_date = membership.end_date
+        else:
+            start_date = today
+
         end_date = start_date + relativedelta(months=plan.duration_months)
 
         try:
@@ -435,7 +456,7 @@ def renew_membership(membership_id):
 @admin_bp.route('/admin/manage/expiring-expired')
 @login_required
 @role_required('admin')
-def view_expiring_and_expired():
+def manage_renewal():
     today = datetime.today().date()
     upcoming = today + timedelta(days=3)
     # Get memberships expiring in next 3 days
@@ -458,4 +479,4 @@ def view_expiring_and_expired():
     )
     # Combine both lists for the table (expiring first, then expired)
     memberships = expiring + expired
-    return render_template('admin/manage/expiring_and_expired.html', memberships=memberships, current_date=today)
+    return render_template('admin/manage/manage-renewal.html', memberships=memberships, current_date=today)

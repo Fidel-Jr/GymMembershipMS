@@ -49,8 +49,8 @@
         <div class="row">
             {% for plan in plans %}
             <div class="col-lg-4 mb-4">
-                <div class="card shadow h-100 {% if plan.name == 'Premium Plan' %}border-primary{% endif %}">
-                    <div class="card-header py-3 bg-primary">
+                <div class="card shadow h-100 {% if plan.name == 'Premium Plan' %}border-warning{% endif %}">
+                    <div class="card-header py-3" style="background-color: #f8b739;">
                         <h6 class="m-0 font-weight-bold text-white text-center">{{ plan.name }}</h6>
                     </div>
                     <div class="card-body">
@@ -67,7 +67,7 @@
                             {% endfor %}
                         </ul>
                     <div class="text-center">
-                            <button class="btn btn-outline-primary btn-lg" data-plan="{{ plan.id }}">Select Plan</button>
+                            <button class="btn btn-outline-warning btn-lg text" data-plan="{{ plan.id }}">Select Plan</button>
                         </div>
                     </div>
                 </div>

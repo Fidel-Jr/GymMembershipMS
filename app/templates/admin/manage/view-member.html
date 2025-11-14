@@ -11,7 +11,11 @@
         <div class="card-body">
             <div class="row mb-4">
                 <div class="col-md-3 text-center">
-                    <img src="{{ url_for('static', filename='images/default-user.png') }}" alt="User Image" class="img-fluid rounded-circle mb-2" style="width: 120px; height: 120px; object-fit: cover;">
+                    {% if member.image %}
+                        <img src="{{ url_for('static', filename='img/users/' ~ member.image) }}" alt="User Image" class="img-fluid rounded-circle mb-2" style="width: 120px; height: 120px; object-fit: cover;">
+                    {% else %}
+                        <img src="{{ url_for('static', filename='img/default-profile.png') }}" alt="User Image" class="img-fluid rounded-circle mb-2" style="width: 120px; height: 120px; object-fit: cover;">
+                    {% endif %}
                     <h6 class="mt-2">{{ member.full_name }}</h6>
                 </div>
                 <div class="col-md-9">

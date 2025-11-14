@@ -34,6 +34,8 @@
   --font-family-sans-serif: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   --font-family-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
 
+
+  
 *,
 *::before,
 *::after {
@@ -8325,3 +8327,16 @@ a[data-toggle="collapse"] {
 
 .footer p {
   color: rgba(255, 255, 255, 0.5); }
+
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+    background-color: #f8b739 !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 4px !important;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.current,
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+    background-color: #d99c2b !important;
+    color: white !important;
+}

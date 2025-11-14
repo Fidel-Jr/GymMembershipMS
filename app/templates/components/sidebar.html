@@ -24,6 +24,9 @@
           <li class="{{ 'active' if request.endpoint == 'admin.manage_plans' }}">
             <a href="{{ url_for('admin.manage_plans') }}">Plans</a>
           </li>
+          <li class="{{ 'active' if request.endpoint == 'admin.manage_renewal' }}">
+            <a href="{{ url_for('admin.manage_renewal') }}">Renewal</a>
+          </li>
         </ul>
       </li>
       {% elif current_user.role == 'member' %}
@@ -35,9 +38,6 @@
         {% endif %}
       <li class="{{ 'active' if request.endpoint == 'main.about' }}">
         <a href="{{ url_for('main.about') }}">About</a>
-      </li>
-      <li class="">
-        <a href="">Contact</a>
       </li>
     </ul>
     {% else %}

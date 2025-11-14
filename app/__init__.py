@@ -4,6 +4,9 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from app.models import db, User
 
+from flask_migrate import Migrate
+
+
 # db = SQLAlchemy()
 # bcrypt = Bcrypt()
 login_manager = LoginManager()
@@ -17,7 +20,7 @@ def create_app():
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
     db.init_app(app)
-    
+    migrate = Migrate(app, db)
     # Flask-Login
     login_manager.init_app(app)
 
