@@ -371,7 +371,7 @@ def edit_member(member_id):
             member.image = prefixed
         db.session.commit()
         flash('Member updated successfully!', 'success')
-        return redirect(url_for('admin.manage_members'))
+        return redirect(url_for('admin.manage_members'))    
     return render_template('admin/manage/edit-member.html', form=form, member=member)
 
 # Delete Member
