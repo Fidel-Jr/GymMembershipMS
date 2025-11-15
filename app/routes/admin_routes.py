@@ -413,9 +413,18 @@ def renew_membership(membership_id):
     plans = MembershipPlan.query.all()
     today = datetime.today().date() 
     
-     # Prevent renewing if membership is still active
-    if membership.end_date and membership.end_date.date() > today:
-        flash(f'Membership for {member.full_name} is already active until {membership.end_date.strftime('%Y-%m-%d') }.', 'warning')
+    # Prevent renewing if the user has any other active membership
+    other_active = Membership.query.filter(
+        Membership.member_id == member.id,
+        Membership.status == 'active',
+        Membership.id != membership.id
+    ).first()
+    if other_active:
+        flash(f"Cannot renew this plan because the user already has another active membership plan.", 'warning')
+        return redirect(url_for('admin.manage_memberships'))
+    # Prevent renewing if this membership is still active
+    if membership.status == 'active' and membership.end_date and membership.end_date.date() > today:
+        flash(f'Membership for {member.full_name} is already active until {membership.end_date.strftime('%Y-%m-%d')}. Cannot renew while active.', 'warning')
         return redirect(url_for('admin.manage_memberships'))
 
     if request.method == 'POST':
