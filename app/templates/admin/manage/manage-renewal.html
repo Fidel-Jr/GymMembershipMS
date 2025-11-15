@@ -30,12 +30,10 @@
                                 <td>{{ membership.start_date.strftime('%Y-%m-%d') }}</td>
                                 <td>{{ membership.end_date.strftime('%Y-%m-%d') }}</td>
                                 <td>
-                                    {% if membership.status|lower == 'expired' %}
+                                    {% if membership.status == 'expired' %}
                                         <span class="badge bg-danger text-white">Expired</span>
-                                    {% elif membership.status|lower == 'active' %}
+                                    {% elif membership.status == 'active' %}
                                         <span class="badge bg-success text-white">Active</span>
-                                    {% elif membership.status|lower == 'pending' %}
-                                        <span class="badge bg-warning text-dark">Pending</span>
                                     {% else %}
                                         <span class="badge bg-secondary text-white">{{ membership.status|capitalize }}</span>
                                     {% endif %}

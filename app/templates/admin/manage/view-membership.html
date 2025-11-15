@@ -14,7 +14,7 @@
                     {% if user.image %}
                         <img src="{{ url_for('static', filename='img/users/' ~ user.image) }}" alt="User Image" class="img-fluid rounded-circle mb-2" style="width: 120px; height: 120px; object-fit: cover;">
                     {% else %}
-                        <img src="{{ url_for('static', filename='images/default-user.png') }}" alt="User Image" class="img-fluid rounded-circle mb-2" style="width: 120px; height: 120px; object-fit: cover;">
+                        <img src="{{ url_for('static', filename='img/default-profile.png') }}" class="mb-3" style="max-width:150px;">
                     {% endif %}
                     <h6 class="mt-2">{{ user.full_name }}</h6>
                 </div>

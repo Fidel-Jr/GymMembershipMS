@@ -16,9 +16,6 @@
         
         <div class="card-header py-3 d-flex justify-content-between align-items-center">
             <h6 class="m-0 font-weight-bold text-dark">Manage Memberships</h6>
-            <!-- <a href="{{ url_for('admin.manage_renewal') }}" class="btn btn-sm btn-warning ms-2 text-light">
-                <i class="fas fa-exclamation-triangle"></i> Expiring/Expired Memberships
-            </a> -->
         </div>
         <div class="card-body">
             <div class="table-responsive">
@@ -50,7 +47,7 @@
                                 {% elif membership.status == 'expired' %}
                                     <span class="badge bg-danger text-light">Expired</span>
                                 {% else %}
-                                    <span class="badge bg-secondary">{{ membership.status|capitalize }}</span>
+                                    <span class="badge bg-secondary text-light">{{ membership.status|capitalize }}</span>
                                 {% endif %}
                             </td>
 
@@ -90,55 +87,6 @@
     </div>
 </div>
 
-
-<!-- View Modal -->
-<div class="modal fade" id="viewModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Membership Details</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <div class="row mb-3">
-                    <div class="col-4 fw-bold">ID:</div>
-                    <div class="col-8" id="membershipDetailId"></div>
-                </div>
-                <div class="row mb-3">
-                    <div class="col-4 fw-bold">Member:</div>
-                    <div class="col-8" id="membershipDetailMember"></div>
-                </div>
-                <div class="row mb-3">
-                    <div class="col-4 fw-bold">Plan:</div>
-                    <div class="col-8" id="membershipDetailPlan"></div>
-                </div>
-                <div class="row mb-3">
-                    <div class="col-4 fw-bold">Duration:</div>
-                    <div class="col-8" id="membershipDetailDuration"></div>
-                </div>
-                <div class="row mb-3">
-                    <div class="col-4 fw-bold">Start Date:</div>
-                    <div class="col-8" id="membershipDetailStartDate"></div>
-                </div>
-                <div class="row mb-3">
-                    <div class="col-4 fw-bold">End Date:</div>
-                    <div class="col-8" id="membershipDetailEndDate"></div>
-                </div>
-                <div class="row mb-3">
-                    <div class="col-4 fw-bold">Status:</div>
-                    <div class="col-8" id="membershipDetailStatus"></div>
-                </div>
-                <div class="row mb-3">
-                    <div class="col-4 fw-bold">Payment Method:</div>
-                    <div class="col-8" id="membershipDetailPayment"></div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
 
 {% block extra_js %}
 <script>

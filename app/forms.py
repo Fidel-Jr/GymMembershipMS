@@ -7,7 +7,6 @@ from wtforms import StringField, PasswordField, SubmitField, FloatField, SelectF
 from wtforms.validators import DataRequired, Email, Length, EqualTo
 from app.models import MembershipPlan, User
 from flask_wtf.file import FileField, FileAllowed
-from werkzeug.utils import secure_filename
 
 # -----------------------
 # Login Form
@@ -75,7 +74,7 @@ class EditMembershipForm(FlaskForm):
     plan_id = SelectField('Plan', validators=[DataRequired()], coerce=int)
     start_date = DateField('Start Date', validators=[DataRequired()])
     end_date = DateField('End Date', validators=[DataRequired()])
-    status = SelectField('Status', choices=[('active', 'Active'), ('expired', 'Expired'), ('pending', 'Pending'), ('cancelled', 'Cancelled')], validators=[DataRequired()])
+    status = SelectField('Status', choices=[('active', 'Active'), ('expired', 'Expired')], validators=[DataRequired()])
     paymentMethod = SelectField('Payment Method', choices=[('cash', 'Cash'), ('card', 'Credit/Debit Card'), ('bank', 'Bank Transfer')], validators=[DataRequired()])
     submit = SubmitField('Save Changes')
 

@@ -35,7 +35,7 @@
                             <td>{{ '%03d' % member.id }}</td>
                             <td>{{ member.full_name }}</td>
                             <td>{{ member.email }}</td>
-                            <td>{{ member.contact_number }}</td>
+                            <td>{{ member.contact_number or "" }}</td>
                             <td>{{ member.created_at.strftime('%Y-%m-%d') if member.created_at else '' }}</td>
                             <td>
                                 {% if member.is_active %}

@@ -23,7 +23,7 @@ def expire_past_memberships():
         Membership.status != 'Expired'
     ).all()
     for m in expired_memberships:
-        m.status = 'Expired'
+        m.status = 'expired'
     if expired_memberships:
         db.session.commit()
 
@@ -61,7 +61,7 @@ def admin_dashboard():
         db.session.query(Membership, User, MembershipPlan)
         .join(User, Membership.member_id == User.id)
         .join(MembershipPlan, Membership.plan_id == MembershipPlan.id)
-        .filter(Membership.status == 'Expired')
+        .filter(Membership.status == 'expired')
         .order_by(Membership.end_date.desc())
         .limit(5)
         .all()
@@ -473,7 +473,7 @@ def manage_renewal():
         db.session.query(Membership, User, MembershipPlan)
         .join(User, Membership.member_id == User.id)
         .join(MembershipPlan, Membership.plan_id == MembershipPlan.id)
-        .filter(Membership.status == 'Expired')
+        .filter(Membership.status == 'expired')
         .order_by(Membership.end_date.desc())
         .all()
     )

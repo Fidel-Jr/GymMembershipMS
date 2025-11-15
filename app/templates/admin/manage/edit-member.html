@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Edit Member | Gym Management{% endblock %}
+{% block title %}Edit Member | Gym Membership Management{% endblock %}
 
 {% block content %}
 <div class="container mt-4">
@@ -17,7 +17,7 @@
                         {% if member.image %}
                             <img src="{{ url_for('static', filename='img/users/' ~ member.image) }}" alt="avatar" class="img-thumbnail" style="width:80px; height:80px; object-fit:cover;">
                         {% else %}
-                            <img src="{{ url_for('static', filename='img/default-profile.png') }}" alt="avatar" class="img-thumbnail" style="width:80px; height:80px; object-fit:cover;">
+                            <img src="{{ url_for('static', filename='img/default-profile.png') }}" class="mb-3" style="max-width:200px;">
                         {% endif %}
                     </div>
                 </div>
