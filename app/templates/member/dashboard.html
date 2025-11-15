@@ -131,13 +131,54 @@
             </div>
         </div>
     </div>
+
+    <!-- Renewal History Table -->
+    {% if renewal_history and renewal_history|length > 0 %}
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-dark">Renewal History</h6>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="renewalHistoryTable">
+                        <thead>
+                            <tr>
+                                <th>Plan</th>
+                                <th>Renewal Date</th>
+                                <th>Last Start</th>
+                                <th>Last End</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in renewal_history %}
+                            <tr>
+                                <td>{{ item.plan.name }}</td>
+                                <td>{{ item.renewal.renewal_date.strftime('%Y-%m-%d') }}</td>
+                                <td>{{ item.renewal.last_start_date.strftime('%Y-%m-%d') if item.renewal.last_start_date else '' }}</td>
+                                <td>{{ item.renewal.last_end_date.strftime('%Y-%m-%d') if item.renewal.last_end_date else '' }}</td>
+                                <td><span class="badge bg-info text-light">Renewed</span></td>
+                            </tr>
+                            {% else %}
+                            No renewal history found.
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    {% endif %}
 </div>
 {% block extra_js %}
     <script>
         $(document).ready(function() {
             $('#memberHistoryTable').DataTable({
-                "ordering": false,      // Disable sorting
-                "responsive": true      // Keep it responsive
+                "ordering": false,
+                "responsive": true
+            });
+            $('#renewalHistoryTable').DataTable({
+                "ordering": false,
+                "responsive": true
             });
         });
     </script>

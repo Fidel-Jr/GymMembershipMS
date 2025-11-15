@@ -1,3 +1,4 @@
+
 from flask import Blueprint, render_template, redirect, url_for, flash, request , session, jsonify, current_app
 from app.models import User
 from flask_login import login_required
@@ -102,6 +103,11 @@ def membership():
             if member and member.role == 'member':
                 form.member_id.choices = [(member.id, member.full_name)]
     if form.validate_on_submit():
+        # Restrict assigning if user has an active membership
+        active_membership = Membership.query.filter_by(member_id=form.member_id.data, status='active').first()
+        if active_membership:
+            flash('❌ Cannot assign a new plan. User already has an active membership plan.', 'danger')
+            return redirect(url_for('admin.membership'))
         plan = MembershipPlan.query.get(form.plan_id.data)
         if not plan:
             flash('Selected membership plan not found.', 'danger')
@@ -261,18 +267,17 @@ def edit_plan(plan_id):
 @role_required('admin')
 def delete_plan(plan_id):
     plan = MembershipPlan.query.get_or_404(plan_id)
-
+    # Restrict deletion if plan is used in any Membership
+    if plan.memberships:
+        flash("❌ Cannot delete this plan because it is still assigned to one or more memberships.", "danger")
+        return redirect(url_for('admin.manage_plans'))
     try:
         db.session.delete(plan)
         db.session.commit()
         flash('Membership plan deleted successfully!', 'success')
-    except IntegrityError:
-        db.session.rollback()
-        flash("❌ Cannot delete this plan because it is still assigned to one or more memberships.", "danger")
     except Exception as e:
         db.session.rollback()
         flash(f"An unexpected error occurred: {str(e)}", "danger")
-
     return redirect(url_for('admin.manage_plans'))
 
 
@@ -318,6 +323,10 @@ def edit_membership(membership_id):
 @role_required('admin')
 def delete_membership(membership_id):
     membership = Membership.query.get_or_404(membership_id)
+    # Restrict deletion if membership has renewals
+    if membership.renewals:
+        flash("❌ Cannot delete this membership because it has related renewals.", "danger")
+        return redirect(url_for('admin.manage_memberships'))
     db.session.delete(membership)
     db.session.commit()
     flash('Membership deleted successfully!', 'warning')
@@ -380,6 +389,10 @@ def edit_member(member_id):
 @role_required('admin')
 def delete_member(member_id):
     member = User.query.get_or_404(member_id)
+    # Restrict deletion if user has memberships or processed renewals
+    if member.memberships or member.processed_renewals:
+        flash("❌ Cannot delete this user because they have related memberships or processed renewals.", "danger")
+        return redirect(url_for('admin.manage_members'))
     db.session.delete(member)
     db.session.commit()
     flash('Member deleted successfully!', 'warning')
@@ -395,7 +408,6 @@ def delete_member(member_id):
 @login_required
 @role_required('admin')
 def renew_membership(membership_id):
-    
     membership = Membership.query.get_or_404(membership_id)
     member = User.query.get(membership.member_id)
     plans = MembershipPlan.query.all()
@@ -479,4 +491,30 @@ def manage_renewal():
     )
     # Combine both lists for the table (expiring first, then expired)
     memberships = expiring + expired
-    return render_template('admin/manage/manage-renewal.html', memberships=memberships, current_date=today)
+
+    # Renewal history for all users
+    renewal_history = (
+        db.session.query(MembershipRenewal, Membership, User, MembershipPlan)
+        .join(Membership, MembershipRenewal.membership_id == Membership.id)
+        .join(User, Membership.member_id == User.id)
+        .join(MembershipPlan, Membership.plan_id == MembershipPlan.id)
+        .order_by(MembershipRenewal.renewal_date.desc())
+        .all()
+    )
+
+    return render_template('admin/manage/manage-renewal.html', memberships=memberships, current_date=today, renewal_history=renewal_history)
+
+
+@admin_bp.route('/admin/manage/renewals/delete/<int:renewal_id>', methods=['POST'])
+@login_required
+@role_required('admin')
+def delete_renewal(renewal_id):
+    renewal = MembershipRenewal.query.get_or_404(renewal_id)
+    try:
+        db.session.delete(renewal)
+        db.session.commit()
+        flash('Renewal deleted successfully!', 'warning')
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Error deleting renewal: {str(e)}', 'danger')
+    return redirect(url_for('admin.manage_renewal'))

@@ -21,14 +21,22 @@ def member_dashboard():
     current_membership = None
     current_plan = None
 
+    renewal_history = []
     for m in memberships:
         plan = MembershipPlan.query.get(m.plan_id)
         membership_history.append((m, plan))
         total_payment += plan.price if plan else 0
         if m.status == 'expired':
             expired_count += 1
-        if MembershipRenewal.query.filter_by(membership_id=m.id).count() > 0:
+        renewals = MembershipRenewal.query.filter_by(membership_id=m.id).order_by(MembershipRenewal.renewal_date.desc()).all()
+        if renewals:
             renewed_count += 1
+            for r in renewals:
+                renewal_history.append({
+                    'plan': plan,
+                    'renewal': r,
+                    'membership': m
+                })
         if m.status == 'active' and not current_membership:
             current_membership = m
             current_plan = plan
@@ -40,5 +48,6 @@ def member_dashboard():
         expired_count=expired_count,
         current_membership=current_membership,
         current_plan=current_plan,
-        membership_history=membership_history
+        membership_history=membership_history,
+        renewal_history=renewal_history
     )

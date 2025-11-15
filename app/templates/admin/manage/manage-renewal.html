@@ -4,6 +4,13 @@
 
 {% block content %}
 <div class="container-fluid">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+            <div class="alert alert-{{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %} 
     <div class="card shadow mb-4">
         <div class="card-header py-3 d-flex justify-content-between align-items-center">
             <h6 class="m-0 font-weight-bold text-dark">Expiring & Expired Memberships</h6>
@@ -59,6 +66,58 @@
             </div>
         </div>
     </div>
+
+    <!-- Renewal History Table -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+            <h6 class="m-0 font-weight-bold text-dark">Renewal History</h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="renewalHistoryTable">
+                    <thead>
+                        <tr>
+                            <th>Member Name</th>
+                            <th>Plan</th>
+                            <th>Renewal Date</th>
+                            <th>Last Start</th>
+                            <th>Last End</th>
+                            <th>Processed By</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for renewal, membership, user, plan in renewal_history %}
+                        <tr>
+                            <td>{{ user.full_name }}</td>
+                            <td>{{ plan.name }}</td>
+                            <td>{{ renewal.renewal_date.strftime('%Y-%m-%d') }}</td>
+                            <td>{{ renewal.last_start_date.strftime('%Y-%m-%d') if renewal.last_start_date else '' }}</td>
+                            <td>{{ renewal.last_end_date.strftime('%Y-%m-%d') if renewal.last_end_date else '' }}</td>
+                            <td>
+                                {% if renewal.processed_user %}
+                                    {{ renewal.processed_user.full_name }}
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </td>
+                            <td>
+                                
+                                <form method="POST" action="{{ url_for('admin.delete_renewal', renewal_id=renewal.id) }}" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this renewal?');">
+                                    <button type="submit" class="btn btn-sm btn-danger" title="Delete">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% else %}
+                            No renewal history found.
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}
 
@@ -69,6 +128,11 @@
             responsive: true,
             pageLength: 10,
             order: [[3, 'desc']]
+        });
+        $('#renewalHistoryTable').DataTable({
+            responsive: true,
+            pageLength: 10,
+            order: [[2, 'desc']]
         });
     });
 </script>
