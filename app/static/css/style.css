@@ -8321,22 +8321,10 @@ a[data-toggle="collapse"] {
 .btn.btn-primary {
   background: #f8b739;
   border-color: #f8b739; }
-  .btn.btn-primary:hover, .btn.btn-primary:focus {
-    background: #f8b739 !important;
-    border-color: #f8b739 !important; }
+.btn.btn-primary:hover, .btn.btn-primary:focus {
+  background: #f8b739 !important;
+  border-color: #f8b739 !important; }
 
 .footer p {
   color: rgba(255, 255, 255, 0.5); }
 
-.dataTables_wrapper .dataTables_paginate .paginate_button {
-    background-color: #f8b739 !important;
-    color: white !important;
-    border: none !important;
-    border-radius: 4px !important;
-}
-
-.dataTables_wrapper .dataTables_paginate .paginate_button.current,
-.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
-    background-color: #d99c2b !important;
-    color: white !important;
-}

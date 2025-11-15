@@ -31,13 +31,25 @@
       </li>
       {% elif current_user.role == 'member' %}
           <!-- MEMBER SIDEBAR -->
-          <li class="{{ 'active' if request.endpoint == 'main.member_dashboard' }}">
+          <li class="{{ 'active' if request.endpoint == 'member.member_dashboard' }}">
             <a href="{{ url_for('member.member_dashboard') }}">Dashboard</a>
           </li>
           
         {% endif %}
       <li class="{{ 'active' if request.endpoint == 'main.about' }}">
         <a href="{{ url_for('main.about') }}">About</a>
+      </li>
+      <!-- Settings Dropdown: visible only on small screens -->
+      <li class="d-lg-none dropdown {% if request.endpoint == 'profile.profile' or request.endpoint == 'auth.logout' %}active{% endif %}">
+        <a href="#settingsSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Settings</a>
+        <ul class="collapse list-unstyled {% if request.endpoint == 'profile.profile' or request.endpoint == 'auth.logout' %}show{% endif %}" id="settingsSubmenu">
+          <li class="{{ 'active' if request.endpoint == 'profile.profile' }}">
+            <a href="{{ url_for('profile.profile') }}">Profile</a>
+          </li>
+          <li>
+            <a href="{{ url_for('auth.logout') }}">Logout</a>
+          </li>
+        </ul>
       </li>
     </ul>
     {% else %}

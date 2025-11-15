@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Manage Memberships | Gym Management{% endblock %}
+{% block title %}Manage Memberships | Gym Membership Management{% endblock %}
 
 {% block content %}
 <div class="container-fluid">
@@ -46,11 +46,9 @@
 
                             <td>
                                 {% if membership.status == 'active' %}
-                                    <span class="badge bg-success">Active</span>
+                                    <span class="badge bg-success text-light">Active</span>
                                 {% elif membership.status == 'expired' %}
-                                    <span class="badge bg-danger">Expired</span>
-                                {% elif membership.status == 'pending' %}
-                                    <span class="badge bg-warning text-dark">Pending</span>
+                                    <span class="badge bg-danger text-light">Expired</span>
                                 {% else %}
                                     <span class="badge bg-secondary">{{ membership.status|capitalize }}</span>
                                 {% endif %}
@@ -58,11 +56,11 @@
 
                             <td>
                                 {% if membership.paymentMethod == 'cash' %}
-                                    <span class="badge bg-success">Cash</span>
+                                    <span class="badge bg-success text-light">Cash</span>
                                 {% elif membership.paymentMethod == 'card' %}
-                                    <span class="badge bg-info text-dark">Card</span>
+                                    <span class="badge bg-info text-light">Card</span>
                                 {% elif membership.paymentMethod == 'bank' %}
-                                    <span class="badge bg-primary">Bank</span>
+                                    <span class="badge bg-primary text-light">Bank</span>
                                 {% else %}
                                     <span class="badge bg-secondary">{{ membership.paymentMethod }}</span>
                                 {% endif %}

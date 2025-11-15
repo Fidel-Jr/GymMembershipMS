@@ -1,6 +1,5 @@
-from flask import Flask
+from flask import Flask, app
 from app.routes import register_blueprints
-from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from app.models import db, User
 
@@ -11,9 +10,11 @@ from app.models import db, User
 # bcrypt = Bcrypt()
 login_manager = LoginManager()
 # login_manager.login_view = 'login'
+app = Flask(__name__)
 
 def create_app():
-    app = Flask(__name__)
+    
+    
     register_blueprints(app)
     app.config['SECRET_KEY'] = 'mysecretkey'
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///../instance/gym.db'
@@ -26,8 +27,6 @@ def create_app():
 
     login_manager.login_view = 'auth.login'  # redirect if not logged in
     login_manager.login_message_category = 'info'
-    
-    
     
     return app
 @login_manager.user_loader

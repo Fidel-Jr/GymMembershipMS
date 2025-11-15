@@ -8,7 +8,7 @@ app = create_app()
 with app.app_context():
     # Drop existing table
     # User.__table__.drop(db.engine)
-    # MembershipRenewal.__table__.drop(db.engine)
+    # Membership.__table__.drop(db.engine)
     db.create_all()
     seed_admin()
 

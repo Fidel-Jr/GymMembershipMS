@@ -453,7 +453,7 @@ def renew_membership(membership_id):
 
 # VIEW EXPIRING & EXPIRED MEMBERSHIPS 
 
-@admin_bp.route('/admin/manage/expiring-expired')
+@admin_bp.route('/admin/manage/renewal')
 @login_required
 @role_required('admin')
 def manage_renewal():
